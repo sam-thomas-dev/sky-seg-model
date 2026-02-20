@@ -19,10 +19,12 @@ optimiser = torch.optim.Adam(modelInstance.parameters(), lr=learning_rate)
 # print(f"images: {images.shape}, {images.dtype}")
 # print(f"masks: {masks.shape}, {masks.dtype}")
 
+# trains model on entire dataset X times
 for iter in range(epochs):
     print(f"Epoch: {iter}\n")
     model_training_testing.train_loop(dataset_tools.trainLoader, modelInstance, lossFunction, optimiser, batch_size)
     model_training_testing.test_loop(dataset_tools.DataLoader, modelInstance, batch_size)
     print(f"----------\n")
 
+# saves only model weights & parameters
 torch.save(modelInstance.state_dict(), "./sky_seg/model_params.pt")
