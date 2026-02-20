@@ -1,0 +1,28 @@
+# From dependencies
+import torch.nn as nn
+import torch
+
+# From extrnal modules
+import nn_definition
+import dataset_tools
+import model_training_testing
+
+learning_rate = 1e-3
+batch_size = 4
+epochs = 5
+
+modelInstance = nn_definition.SegmentationModel()
+lossFunction = nn.BCEWithLogitsLoss()
+optimiser = torch.optim.Adam(modelInstance.parameters(), lr=learning_rate)
+
+# images, masks = next(iter(valLoader))
+# print(f"images: {images.shape}, {images.dtype}")
+# print(f"masks: {masks.shape}, {masks.dtype}")
+
+for iter in range(epochs):
+    print(f"Epoch: {iter}\n")
+    model_training_testing.train_loop(dataset_tools.trainLoader, modelInstance, lossFunction, optimiser, batch_size)
+    model_training_testing.test_loop(dataset_tools.DataLoader, modelInstance, batch_size)
+    print(f"----------\n")
+
+torch.save(modelInstance.state_dict(), "./sky_seg/model_params.pt")

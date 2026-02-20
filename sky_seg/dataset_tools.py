@@ -1,8 +1,12 @@
+# From dependencies
 import numpy as np
 from PIL import Image
 import os
 from torch.utils.data import Dataset
 import torch
+import torchvision.transforms.functional as F
+import torchvision.transforms as T
+from torch.utils.data import DataLoader
 
 # Cityscapes labels work by assigning each pixel in an image an ID,
 # each ID represents a category, 
@@ -37,7 +41,7 @@ def getSkyMask(label_path):
     #this results in a binary array where pixels that are 1 have the pixel id specified,
     #and all with 0 dont, so in this case, all 1 pixels had the id for sky,
     # this results in a skymask that can be used for training
-    skyMask = boolArray.astype(np.uint8)
+    skyMask = boolArray.astype(np.float32)
 
     return skyMask
 
@@ -95,13 +99,42 @@ class CityscapeSkyDataset(Dataset):
         #Gets a mask of all pixels in label image with id for sky
         mask = getSkyMask(labelPath)
 
-        #if transform function provided, transform image
-        if self.transform:
-            image = self.transform(image)
-
         #Converts mask np.array to tensor, adds new dimention with size of 1 at index 0 of tensor,
         #so tensors shape now equals (1, H, W)
         mask = torch.from_numpy(mask).unsqueeze(0)  
 
+        #if transform function provided, transform image
+        if self.transform:
+            image = self.transform(image)
+
+        mask = F.resize(mask, (256, 512))
+
         #returns image and mask tupple
         return image, mask
+    
+
+#Chains multiple torchvision transformation opperations togther into 1 operation 
+transformImage = T.Compose([
+    T.Resize((256, 512)), #resizes input image to specified size, where if image is tensor, its expected shape is [..., H, W], where ... is a max of 2 leading dimentions
+    T.ToTensor(), #converts PIL image or np.array to tensor
+    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #transforms tensor to have 0 mean & unit variance, helps standardise features and bring data into a consistant range
+])
+
+# Training Data
+#Creates dataset instance taking images & labels from training subdirectory
+trainingData = CityscapeSkyDataset(
+    root="cityscape_data",
+    split="train",
+    transform=transformImage
+)
+
+#Creates dataset instance taking images & labels from validation subdirectory
+validationData = CityscapeSkyDataset(
+    root="cityscape_data",
+    split="val",
+    transform=transformImage
+)
+
+#Creates dataloader that loads 4 images at a time for both training and validation
+trainLoader = DataLoader(trainingData, batch_size=4, shuffle=True, num_workers=0)
+valLoader = DataLoader(validationData, batch_size=4, shuffle=False)

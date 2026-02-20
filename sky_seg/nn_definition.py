@@ -75,6 +75,6 @@ class SegmentationModel(nn.Module):
         d1 = torch.cat([d1, e1], dim=1) #concatenates tensors d1 & e1 in that order along the y axis
         d1 = self.conv4(d1)
 
-        # logits
+        # returned logits
         return self.outputConv(d1)
     

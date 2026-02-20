@@ -1,6 +1,8 @@
+# From dependencies
 import torch
 import matplotlib.pyplot as plt
 
+# From external modules
 import image_tools
 
 def unnormaliseImage(img):
