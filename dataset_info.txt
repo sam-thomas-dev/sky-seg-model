@@ -1,0 +1,21 @@
+For the model to function, the cityscapes data set is required
+Specifically the following two datasets:
+- gtFine_trainvaltest.zip (241mb) 
+- leftImg8Bit_trainvaltest.zip (11GB)
+
+Both datasets must be stored in a direcory named "cityscape_data", 
+with the dataset directories named "gtFine" and "leftImg8bit" respectively.
+The resulting direcory structure should look somthing like:
+
+/sky_seg_model
+    /venv
+    /sky_seg
+    /cityscape_data
+        /gtFine
+        /leftImg8bit
+    /dataset_info.txt
+    /...
+
+(note, if you want your dataset to have a different direcory format from that, 
+you will need to change the direcory specifications in ./sky_seg/dataset_tools.py)
+
