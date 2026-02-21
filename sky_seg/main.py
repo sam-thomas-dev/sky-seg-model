@@ -23,7 +23,7 @@ optimiser = torch.optim.Adam(modelInstance.parameters(), lr=learning_rate)
 for iter in range(epochs):
     print(f"Epoch: {iter}\n")
     model_training_testing.train_loop(dataset_tools.trainLoader, modelInstance, lossFunction, optimiser, batch_size)
-    model_training_testing.test_loop(dataset_tools.DataLoader, modelInstance, batch_size)
+    model_training_testing.test_loop(dataset_tools.valLoader, modelInstance, batch_size)
     print(f"----------\n")
 
 # saves only model weights & parameters
