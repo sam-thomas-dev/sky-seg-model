@@ -7,6 +7,7 @@ import nn_definition
 import dataset_tools
 import model_training_testing
 
+# ---Training Model & Saving Learned Parameters---
 # learning_rate = 1e-3
 # batch_size = 4
 # epochs = 5
@@ -14,10 +15,6 @@ import model_training_testing
 # modelInstance = nn_definition.SegmentationModel()
 # lossFunction = nn.BCEWithLogitsLoss()
 # optimiser = torch.optim.Adam(modelInstance.parameters(), lr=learning_rate)
-
-# # images, masks = next(iter(valLoader))
-# # print(f"images: {images.shape}, {images.dtype}")
-# # print(f"masks: {masks.shape}, {masks.dtype}")
 
 # # trains model on entire dataset X times
 # for iter in range(epochs):
@@ -29,7 +26,7 @@ import model_training_testing
 # # saves only model weights & parameters
 # torch.save(modelInstance.state_dict(), "./sky_seg/model_params.pt")
 
-# test trained model
+# ---Loading A Prediction Using Trained Weights---
 model_inst = nn_definition.SegmentationModel()
 model_inst.load_state_dict(torch.load("./model_params.pt", weights_only=True))
 model_inst.eval
