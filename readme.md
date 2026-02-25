@@ -1,5 +1,5 @@
 ## Synopsis
-The Python project in the "sky_seg" directory defines a convolutional neural network used predict which pixels in an image are sky. The model makes this prediction by producing a Mask over an input image, which dictates which pixels the model predicts are sky. It's entry point is `main.py`.
+The Python project in the "sky_seg" directory defines a convolutional neural network used predict which pixels in an image are sky. The model makes this prediction by producing a Mask over an input image, which dictates which pixels the model predicts are sky. Its entry point is `main.py`.
 
 ### Motivation
 My goal with this project was to teach myself how machine learning works at a fundamental level, using one of the most popular deep learning tensor packages, that being PyTorch. Due to this goal, I didn't want to use a pre-defined model, I wanted to create my own model for my own specific use case. And creating a CV model for sky segmentation seemed like a good task for this purpose.  
@@ -22,7 +22,7 @@ leftImg8Bit contains a set of 8-bit images, and gtFine contains a set of labels/
 
 As the name suggests, this data comes pre-segmented into a training, validation, and testing set.
 
-### Making The Data Useable
+### Making The Data Usable
 To use this dataset to train the model, we need to use pytoch's ["Dataset"](https://docs.pytorch.org/tutorials/beginner/data_loading_tutorial.html) class to create a subclass that will be used to load the data. This subclass defines methods that will be performed on the input data when the class is instantiated. This gets the data into a form that the model can train on.
 
 In this case, when the CityscapeSkyDataset class is instantiated and its get method is called by the Pytorch ["DataLoader"](https://docs.pytorch.org/tutorials/beginner/data_loading_tutorial.html) (see below), the following actions are performed. An image and label mask are retrieved from the appropriate dataset (as in validation, testing, etc..). 
@@ -73,7 +73,7 @@ Output (1, H, W).
 ## Training & Testing
 To train a model using PyTorch, you need 4 things: an instance of your model, a data loader to access the training dataset, a loss function, and an optimizer. The two that have not been covered above are the loss function and the optimiser. As such, they will now be elaborated below.
 
-### Loss Fuction
+### Loss Function
 A loss function is used to quantify the difference between the model's expected output and its actual output. Its output is used in backpropagation to determine how the biases and weights in the network should be adjusted. In this instance pytorch's ["BCEWithLogitsLoss"](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) was used. When the `.backward()` is called on the loss object, the gradients are calculated for each parameter. Once this is done, the optimiser can then be used to optimise said parameters.
 
 ### Optimiser
