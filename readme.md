@@ -39,11 +39,51 @@ The dataloader is used to define how the data is loaded. It takes 3 main paramet
 In this case, the training data is set to be loaded from the "trainingData" instance, in batches of 4, with the order shuffled.
 
 
-## Showing Data & Predictions
-
 ## Defining The Network
+A neural network in pytoch is deffined by creating a subclass of pytorch's ["Torch.nn.Module"](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html) class. This subclass is where you define the tensor oporations to be used in both forwad and backward propogation, along with how those operation are used to create the layers of the model. When the neural network is defined, you only need to define the forward propogation method, as the backward propogation will be defined automatically using ["autograd"](https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html) (Pytorch's automatic automatic differentiation engine, used to compute tensor gradients) based off the forward prop function.
 
+### What Was Implemented
+In this case, I have decided to define the model using the Mini U-Net achitecture, which as the name suggests is a more efficient scalled down version of the U-Net achitechture, whith less layers and starting at a smaller resolution, its a good choice for simple segmentation models. 
+
+More specifically, the following is the exact architecture that was use for the network. 
+
+
+Input (3, H, W) -> 
+3x3 Conv2D -> 
+ReLU -> 
+3x3 Conv2D -> 
+ReLU -> 
+Downsample ->
+3x3 Conv2D-> 
+ReLu -> 
+3x3 Conv2D-> 
+ReLU -> 
+Downsample -> 
+Bottleneck -> 
+Upsample -> 
+3x3 Conv2D -> 
+ReLU -> 
+3x3 Conv2D -> 
+ReLU ->
+Upsample -> 
+3x3 Conv2D -> 
+ReLU -> 
+3x3 Conv2D -> 
+ReLU ->
+1x1 Conv2D -> 
+Output (1, H, W).
+ 
 ## Training & Testing
+To train a model using pytorch, you need 4 things, an instance of your model, a data loader to access the training dataset, a loss function, and an optimiser. The two that have not been covered above are, the loss function, and the optimiser. 
+
+### Loss Fuction
+A loss function is used to quntify the difference between the models expected output, and its actual output. Its output is used in backware propogation to determine how the biasis and weights in the network should be adjusted. In this instance pytorch's ["BCEWithLogitsLoss"](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) was used. When the "backward()" is called on the loss object, the gradients are calcualted for each parameter. Once this is done, the optimiser can then be used to optimise said parameters.
+
+### Optimiser
+An optimiser is used to update a models parameter weights and biasis based on the gradients calculated by the loss function, in order to minimise loss. When an optimiser is instantiated, you must provide a learning rate, this specifies geat each step will be from the optimiser. In this case pytorchs ["torch.optim.Adam"](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html) optimiser has been used. After the loss function has computer the gradients for each parameter, the optimisers "step()" method is called, this adjusts each parameters weighs based of the gradients stored in said parameter. After this method has been run, the gradients stored for each parameter are zeroed used the optimisers "zero_grad()" method, 
+
+
+### Training & Testing Loop
 
 ## How To Run The Model
 
