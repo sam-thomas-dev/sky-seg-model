@@ -80,13 +80,20 @@ To train a model using pytorch, you need 4 things, an instance of your model, a 
 A loss function is used to quntify the difference between the models expected output, and its actual output. Its output is used in backware propogation to determine how the biasis and weights in the network should be adjusted. In this instance pytorch's ["BCEWithLogitsLoss"](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) was used. When the "backward()" is called on the loss object, the gradients are calcualted for each parameter. Once this is done, the optimiser can then be used to optimise said parameters.
 
 ### Optimiser
-An optimiser is used to update a models parameter weights and biasis based on the gradients calculated by the loss function, in order to minimise loss. When an optimiser is instantiated, you must provide a learning rate, this specifies geat each step will be from the optimiser. In this case pytorchs ["torch.optim.Adam"](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html) optimiser has been used. After the loss function has computer the gradients for each parameter, the optimisers "step()" method is called, this adjusts each parameters weighs based of the gradients stored in said parameter. After this method has been run, the gradients stored for each parameter are zeroed used the optimisers "zero_grad()" method, 
+An optimiser is used to update a models parameter weights and biasis based on the gradients calculated by the loss function, in order to minimise loss. When an optimiser is instantiated, you must provide a learning rate, this specifies geat each step will be from the optimiser. In this case pytorchs ["torch.optim.Adam"](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html) optimiser has been used. After the loss function has computer the gradients for each parameter, the optimisers "step()" method is called, this adjusts each parameters weighs based on he gradients stored in said parameter. After this method has been run, the gradients stored for each parameter are zeroed using the optimisers "zero_grad()" method, if this is not done the gradients will accumulate each time the loss function calculates gradients, leading to incorrect parameter weight adjustments by the optimiser.
 
 
 ### Training & Testing Loop
+Each time a model has been trained on an entire dataset, it is refered to as an epoch. In this case the model will be trained for 5 epochs. On each epoch, the model will be trained on all data in the dataset, after which a test function will caclulate the performace of the model using all data in the validation data set. 
+
+This is done by takeing the logit tensor output by the model, and creating a mask using a threshold value, where every value above the threshold becomes 1, and all below become 0. In this case the threshold has been set to 0.5. Using this mask, both an IoU and Dice score are calculated for each image by comparing it with the actual sky mask for that image. Where the IoU & Dice score are two methods of quantifying the overlap of two masks, the higher the score the closer they are to being the same. After these scores have been calculated for each image, the average Dice & IoU score for all images will be displayed.
+
+Once all epochs have been passed, the final weights and baiasis for each parameter in the model will be saved to a file labeled "model_params.pt".
 
 ## How To Run The Model
+All required packages to run the model are specified in ["requirements.txt"](./requirements.txt), all of which can be downloaded using the `pip install -r requirements.txt` command. To run the model you will either need to download the ["CityScapes Dataset"](https://www.cityscapes-dataset.com), more detials on this can be found [here](./dataset_info.txt). Running main.py currently will load a test prediction from the validation data set using parameter weights and biasis I generated from 5 iterations of the training loop. To change this, simply call the other function in `main.py`, as specified below.
 
+`main.py` contains two functions `runTrainingLoop()` and `loadPreTrainedPred()`. As their names suggest calling `runTrainingLoop()` will start a new instance of training the model, and calling `loadPreTrainedPred()` will load a prediction based on the pretrained weights.
 
 
 
